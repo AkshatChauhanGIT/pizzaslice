@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Enterprise Flutter App',
+      title: 'Pizza Slice',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme, // Use global theme
       initialRoute: AppRoutes.home, // Set the starting screen
