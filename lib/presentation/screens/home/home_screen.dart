@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pizzaslice/core/theme.dart';
+import 'package:pizzaslice/presentation/routes/app_routes.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -259,7 +260,7 @@ class HomeScreenState extends State<HomeScreen> {
         ),
         OutlinedButton(
           onPressed: () {
-            /* will handle onclick here */
+            Navigator.pushNamed(context, AppRoutes.register);
           },
           child: const Text(
             "Register",

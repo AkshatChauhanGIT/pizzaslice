@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pizzaslice/core/theme.dart';
+import 'package:pizzaslice/presentation/routes/app_routes.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -21,9 +22,17 @@ class RegisterScreen extends StatelessWidget {
               const SizedBox(height: 32),
               _buildInputField(label: "Email", hintText: "Enter your email"),
               const SizedBox(height: 16),
-              _buildInputField(label: "Password", hintText: "Enter your password", isPassword: true),
+              _buildInputField(
+                label: "Password",
+                hintText: "Enter your password",
+                isPassword: true,
+              ),
               const SizedBox(height: 16),
-              _buildInputField(label: "Confirm Password", hintText: "Confirm your password", isPassword: true),
+              _buildInputField(
+                label: "Confirm Password",
+                hintText: "Confirm your password",
+                isPassword: true,
+              ),
               const SizedBox(height: 24),
               _buildRegisterButton(),
               const SizedBox(height: 24),
@@ -84,7 +93,10 @@ class RegisterScreen extends StatelessWidget {
           obscureText: isPassword,
           decoration: InputDecoration(
             hintText: hintText,
-            suffixIcon: isPassword ? const Icon(Icons.visibility_off, color: Colors.grey) : null,
+            suffixIcon:
+                isPassword
+                    ? const Icon(Icons.visibility_off, color: Colors.grey)
+                    : null,
           ),
         ),
       ],
@@ -135,10 +147,23 @@ class RegisterScreen extends StatelessWidget {
   }
 
   Widget _buildFooterText() {
-    return const Text(
-      "Lorem ipsum is a dummy text commonly used in graphic design, publishing, and web development to fill empty spaces in a layout that does not yet have content.",
-      style: TextStyle(fontSize: 12, color: Colors.grey),
-      textAlign: TextAlign.center,
+    return Builder(
+      builder:
+          (context) => Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Already have an Account?  ",
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.home);
+                },
+                child: const Text("Login Now", style: TextStyle(fontSize: 14)),
+              ),
+            ],
+          ),
     );
   }
 }
