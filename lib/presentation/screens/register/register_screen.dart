@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pizzaslice/core/theme.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,48 +14,22 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 60), // Top spacing
-
-              // Profile Avatar
+              const SizedBox(height: 60),
               _buildProfileAvatar(),
-
               const SizedBox(height: 16),
-
-              // Title Section
               _buildTitleSection(),
-
               const SizedBox(height: 32),
-
-              // Email Field
-              _buildInputField(
-                label: "Email",
-                hintText: "Enter your email",
-              ),
-
+              _buildInputField(label: "Email", hintText: "Enter your email"),
               const SizedBox(height: 16),
-
-              // Password Field
-              _buildInputField(
-                label: "Password",
-                hintText: "Enter your password",
-                isPassword: true,
-              ),
-
+              _buildInputField(label: "Password", hintText: "Enter your password", isPassword: true),
+              const SizedBox(height: 16),
+              _buildInputField(label: "Confirm Password", hintText: "Confirm your password", isPassword: true),
               const SizedBox(height: 24),
-
-              // Login Button
-              _buildLoginButton(),
-
+              _buildRegisterButton(),
               const SizedBox(height: 24),
-
-              // Social Login Icons
               _buildSocialLoginIcons(),
-
               const SizedBox(height: 24),
-
-              // Footer Text
               _buildFooterText(),
-
               const SizedBox(height: 40),
             ],
           ),
@@ -64,22 +38,17 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // Profile Avatar Widget
   Widget _buildProfileAvatar() {
     return CircleAvatar(
       radius: 50,
       backgroundColor: AppTheme.themeBgColor,
       child: const Text(
         "U",
-        style: TextStyle(
-          fontSize: 40,
-          color: AppTheme.themeBgColorLight,
-        ),
+        style: TextStyle(fontSize: 40, color: AppTheme.themeBgColorLight),
       ),
     );
   }
 
-  // Title Section Widget
   Widget _buildTitleSection() {
     return const Column(
       children: [
@@ -98,7 +67,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // Input Field Widget
   Widget _buildInputField({
     required String label,
     required String hintText,
@@ -116,17 +84,14 @@ class HomeScreen extends StatelessWidget {
           obscureText: isPassword,
           decoration: InputDecoration(
             hintText: hintText,
-            suffixIcon: isPassword
-                ? const Icon(Icons.visibility_off, color: Colors.grey)
-                : null,
+            suffixIcon: isPassword ? const Icon(Icons.visibility_off, color: Colors.grey) : null,
           ),
         ),
       ],
     );
   }
 
-  // Login Button Widget
-  Widget _buildLoginButton() {
+  Widget _buildRegisterButton() {
     return SizedBox(
       width: double.infinity,
       height: 50,
@@ -136,12 +101,11 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: AppTheme.themeBgColor,
           foregroundColor: Colors.white,
         ),
-        child: const Text("Login", style: TextStyle(fontSize: 16)),
+        child: const Text("Register", style: TextStyle(fontSize: 16)),
       ),
     );
   }
 
-  // Social Login Icons Widget
   Widget _buildSocialLoginIcons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -164,16 +128,12 @@ class HomeScreen extends StatelessWidget {
         CircleAvatar(
           radius: 30,
           backgroundColor: Colors.white,
-          child: Image.asset(
-            'assets/images/google_logo_sm.png',
-            width: 30,
-          ),
+          child: Image.asset('assets/images/google_logo_sm.png', width: 30),
         ),
       ],
     );
   }
 
-  // Footer Text Widget
   Widget _buildFooterText() {
     return const Text(
       "Lorem ipsum is a dummy text commonly used in graphic design, publishing, and web development to fill empty spaces in a layout that does not yet have content.",
