@@ -10,7 +10,7 @@ class AppTheme {
   static const Color inputHintColor = Color(0xFFB0B3B2);
 
   static ThemeData lightTheme = ThemeData(
-    primaryColor: Colors.blue,
+    primaryColor: themeBgColor,
     scaffoldBackgroundColor: Colors.white,
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.blue,
@@ -43,10 +43,20 @@ class AppTheme {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(inputBorderRadius),
         borderSide: BorderSide(color: themeBgColor)
-
       ),
       filled: true,
       fillColor: inputBgColor,
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: themeBgColor,
+        side: BorderSide(color: themeBgColor),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+      ),
     ),
   );
 }
