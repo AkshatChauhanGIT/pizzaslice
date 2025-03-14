@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:pizzaslice/presentation/screens/home/home_screen.dart';
 import 'package:pizzaslice/presentation/screens/login/login_screen.dart';
 import 'package:pizzaslice/presentation/screens/register/register_screen.dart';
+import 'package:pizzaslice/presentation/screens/register/verify_screen.dart';
 
 
 class AppRoutes {
   static const String home = '/home';
   static const String login = '/login';
   static const String register = '/register';
+  static const String loginVerification = "/login_verification";
 
   static Map<String, WidgetBuilder> routes = {
     home: (context) => const HomeScreen(),
     login: (context) => const LoginScreen(),
     register: (context) => const RegisterScreen(),
+    loginVerification: (context) => const LoginVerificationScreen(),
   };
 }

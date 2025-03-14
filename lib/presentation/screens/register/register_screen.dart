@@ -34,7 +34,7 @@ class RegisterScreen extends StatelessWidget {
                 isPassword: true,
               ),
               const SizedBox(height: 24),
-              _buildRegisterButton(),
+              _buildRegisterButton(context), // ✅ Fixed: Passed context
               const SizedBox(height: 24),
               _buildSocialLoginIcons(),
               const SizedBox(height: 24),
@@ -62,7 +62,7 @@ class RegisterScreen extends StatelessWidget {
     return const Column(
       children: [
         Text(
-          "Irresistable Experience",
+          "Irresistible Experience",
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
@@ -93,22 +93,23 @@ class RegisterScreen extends StatelessWidget {
           obscureText: isPassword,
           decoration: InputDecoration(
             hintText: hintText,
-            suffixIcon:
-                isPassword
-                    ? const Icon(Icons.visibility_off, color: Colors.grey)
-                    : null,
+            suffixIcon: isPassword
+                ? const Icon(Icons.visibility_off, color: Colors.grey)
+                : null,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildRegisterButton() {
+  Widget _buildRegisterButton(BuildContext context) { // ✅ Fixed: Added context as a parameter
     return SizedBox(
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.loginVerification); // ✅ Now context is available
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.themeBgColor,
           foregroundColor: Colors.white,
@@ -148,22 +149,21 @@ class RegisterScreen extends StatelessWidget {
 
   Widget _buildFooterText() {
     return Builder(
-      builder:
-          (context) => Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Already have an Account?  ",
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              OutlinedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.home);
-                },
-                child: const Text("Login Now", style: TextStyle(fontSize: 14)),
-              ),
-            ],
+      builder: (context) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            "Already have an Account?  ",
+            style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
+          OutlinedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.login);
+            },
+            child: const Text("Login Now", style: TextStyle(fontSize: 14)),
+          ),
+        ],
+      ),
     );
   }
 }
