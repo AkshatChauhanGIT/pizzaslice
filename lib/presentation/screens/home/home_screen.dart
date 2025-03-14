@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pizzaslice/core/theme.dart';
 import 'package:pizzaslice/presentation/routes/app_routes.dart';
+import 'package:pizzaslice/core/utils/user_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,31 +11,47 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  final _formKey = GlobalKey<FormState>(); // Form key for validation
-  final _emailController =
-      TextEditingController(); // Controller for email field
-  final _passwordController =
-      TextEditingController(); // Controller for password field
-  bool _isLoading = false; // To track loading state
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
-  // Function to call the login API
   Future<void> _loginUser(String email, String password) async {
     setState(() {
-      _isLoading = true; // Show loading indicator
+      _isLoading = true;
     });
 
     try {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Login successful: message')));
+      final success = await UserPreferences.loginUser(email, password);
+
+      if (success) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Login successful')));
+
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.dashboard,
+            (route) => false,
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid email or password')),
+          );
+        }
+      }
     } catch (e) {
-      // Handle network or other errors
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     } finally {
       setState(() {
-        _isLoading = false; // Hide loading indicator
+        _isLoading = false;
       });
     }
   }
@@ -46,13 +63,12 @@ class HomeScreenState extends State<HomeScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Form(
-            key: _formKey, // Assign the form key
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 60), // Top spacing
-                // Profile Avatar
+                const SizedBox(height: 60),
                 _buildProfileAvatar(),
 
                 const SizedBox(height: 16),
@@ -80,7 +96,7 @@ class HomeScreenState extends State<HomeScreen> {
                   },
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 5),
 
                 // Password Field
                 _buildInputField(
@@ -167,17 +183,21 @@ class HomeScreenState extends State<HomeScreen> {
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        TextFormField(
-          obscureText: isPassword,
-          controller: controller,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          decoration: InputDecoration(
-            hintText: hintText,
-            suffixIcon: isPassword
-                ? const Icon(Icons.visibility_off, color: Colors.grey)
-                : null,
+        SizedBox(
+          height: 75,
+          child: TextFormField(
+            obscureText: isPassword,
+            controller: controller,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: InputDecoration(
+              hintText: hintText,
+              suffixIcon:
+                  isPassword
+                      ? const Icon(Icons.visibility_off, color: Colors.grey)
+                      : null,
+            ),
+            validator: validator,
           ),
-          validator: validator,
         ),
       ],
     );
@@ -240,10 +260,7 @@ class HomeScreenState extends State<HomeScreen> {
         CircleAvatar(
           radius: 30,
           backgroundColor: Colors.white,
-          child: Image.asset(
-            'assets/images/google_logo_sm.png',
-            width: 30,
-          ),
+          child: Image.asset('assets/images/google_logo_sm.png', width: 30),
         ),
       ],
     );
@@ -262,10 +279,7 @@ class HomeScreenState extends State<HomeScreen> {
           onPressed: () {
             Navigator.pushNamed(context, AppRoutes.register);
           },
-          child: const Text(
-            "Register",
-            style: TextStyle(fontSize: 14),
-          ),
+          child: const Text("Register", style: TextStyle(fontSize: 14)),
         ),
       ],
     );

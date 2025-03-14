@@ -1,0 +1,3 @@
+@echo off
+echo Starting Flutter Web on port 3000...
+flutter run -d web-server --web-port=3000
