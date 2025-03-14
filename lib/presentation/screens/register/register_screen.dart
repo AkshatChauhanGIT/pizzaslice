@@ -158,7 +158,7 @@ class RegisterScreen extends StatelessWidget {
           ),
           OutlinedButton(
             onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.login);
+              Navigator.pushNamed(context, AppRoutes.home);
             },
             child: const Text("Login Now", style: TextStyle(fontSize: 14)),
           ),
