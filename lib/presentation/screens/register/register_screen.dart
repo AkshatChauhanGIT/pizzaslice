@@ -2,8 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:pizzaslice/core/theme.dart';
 import 'package:pizzaslice/presentation/routes/app_routes.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -11,36 +22,66 @@ class RegisterScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 60),
-              _buildProfileAvatar(),
-              const SizedBox(height: 16),
-              _buildTitleSection(),
-              const SizedBox(height: 32),
-              _buildInputField(label: "Email", hintText: "Enter your email"),
-              const SizedBox(height: 16),
-              _buildInputField(
-                label: "Password",
-                hintText: "Enter your password",
-                isPassword: true,
-              ),
-              const SizedBox(height: 16),
-              _buildInputField(
-                label: "Confirm Password",
-                hintText: "Confirm your password",
-                isPassword: true,
-              ),
-              const SizedBox(height: 24),
-              _buildRegisterButton(context), // ✅ Fixed: Passed context
-              const SizedBox(height: 24),
-              _buildSocialLoginIcons(),
-              const SizedBox(height: 24),
-              _buildFooterText(),
-              const SizedBox(height: 40),
-            ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 60),
+                _buildProfileAvatar(),
+                const SizedBox(height: 16),
+                _buildTitleSection(),
+                const SizedBox(height: 32),
+                _buildInputField(
+                  label: "Name",
+                  hintText: "Enter your name",
+                  controller: _nameController,
+                  validator: (value) => value?.isEmpty ?? true ? 'Please enter your name' : null,
+                ),
+                const SizedBox(height: 16),
+                _buildInputField(
+                  label: "Email",
+                  hintText: "Enter your email",
+                  controller: _emailController,
+                  validator: (value) {
+                    if (value?.isEmpty ?? true) return 'Please enter your email';
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value!)) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildInputField(
+                  label: "Password",
+                  hintText: "Enter your password",
+                  isPassword: true,
+                  controller: _passwordController,
+                  validator: (value) => value?.isEmpty ?? true ? 'Please enter your password' : null,
+                ),
+                const SizedBox(height: 16),
+                _buildInputField(
+                  label: "Confirm Password",
+                  hintText: "Confirm your password",
+                  isPassword: true,
+                  controller: _confirmPasswordController,
+                  validator: (value) {
+                    if (value != _passwordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 24),
+                _buildRegisterButton(context),
+                const SizedBox(height: 24),
+                _buildSocialLoginIcons(),
+                const SizedBox(height: 24),
+                _buildFooterText(),
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),
@@ -80,6 +121,8 @@ class RegisterScreen extends StatelessWidget {
     required String label,
     required String hintText,
     bool isPassword = false,
+    TextEditingController? controller,
+    String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,8 +132,10 @@ class RegisterScreen extends StatelessWidget {
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        TextField(
+        TextFormField(
+          controller: controller,
           obscureText: isPassword,
+          validator: validator,
           decoration: InputDecoration(
             hintText: hintText,
             suffixIcon: isPassword
@@ -102,13 +147,23 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRegisterButton(BuildContext context) { // ✅ Fixed: Added context as a parameter
+  Widget _buildRegisterButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
         onPressed: () {
-          Navigator.pushNamed(context, AppRoutes.loginVerification); // ✅ Now context is available
+          if (_formKey.currentState!.validate()) {
+            Navigator.pushNamed(
+              context,
+              AppRoutes.loginVerification,
+              arguments: {
+                'email': _emailController.text,
+                'password': _passwordController.text,
+                'name': _nameController.text,
+              },
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.themeBgColor,

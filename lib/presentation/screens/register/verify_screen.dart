@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:pizzaslice/core/theme.dart';
 import 'package:pizzaslice/presentation/routes/app_routes.dart';
+import 'package:pizzaslice/core/utils/user_preferences.dart';
 
 class LoginVerificationScreen extends StatefulWidget {
   const LoginVerificationScreen({super.key});
@@ -13,27 +14,59 @@ class LoginVerificationScreen extends StatefulWidget {
 class _LoginVerificationScreenState extends State<LoginVerificationScreen> {
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _otpFocusNode = FocusNode();
+  late Map<String, String> userData;
+  bool _isValidRoute = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args != null && args is Map<String, String>) {
+      userData = args;
+      _isValidRoute = userData.containsKey('email') && 
+                     userData.containsKey('password') && 
+                     userData.containsKey('name');
+    } else {
+      _isValidRoute = false;
+    }
+
+    // Redirect if accessed directly without data
+    if (!_isValidRoute && mounted) {
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Show loading or redirect if invalid route
+    if (!_isValidRoute) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 60),
-            _buildProfileAvatar(),
-            const SizedBox(height: 16),
-            _buildTitleSection(),
-            const SizedBox(height: 32),
-            _buildOtpInput(),
-            const SizedBox(height: 16),
-            _buildVerificationMessage(),
-            const SizedBox(height: 32),
-            _buildVerifyButton(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 60),
+              _buildProfileAvatar(),
+              const SizedBox(height: 16),
+              _buildTitleSection(),
+              const SizedBox(height: 32),
+              _buildOtpInput(),
+              const SizedBox(height: 16),
+              _buildVerificationMessage(),
+              const SizedBox(height: 32),
+              _buildVerifyButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -42,10 +75,10 @@ class _LoginVerificationScreenState extends State<LoginVerificationScreen> {
   Widget _buildProfileAvatar() {
     return const CircleAvatar(
       radius: 50,
-      backgroundColor: Colors.orange,
+      backgroundColor: AppTheme.themeBgColor,
       child: Text(
         "U",
-        style: TextStyle(fontSize: 40, color: Colors.white),
+        style: TextStyle(fontSize: 40, color: AppTheme.themeBgColorLight),
       ),
     );
   }
@@ -83,7 +116,35 @@ class _LoginVerificationScreenState extends State<LoginVerificationScreen> {
         ),
       ),
       keyboardType: TextInputType.number,
-      onCompleted: (pin) => debugPrint("OTP Entered: $pin"), // Replaced print()
+      onCompleted: (pin) async {
+        if (pin == '123456') {
+          // Save user data
+          final success = await UserPreferences.saveUser(
+            email: userData['email']!,
+            name: userData['name']!,
+            password: userData['password']!,
+          );
+
+          if (success && mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Registration successful!')),
+            );
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.dashboard,
+              (route) => false,
+            );
+          } else if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Email already exists')),
+            );
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid OTP. Please enter 123456')),
+          );
+        }
+      },
     );
   }
 

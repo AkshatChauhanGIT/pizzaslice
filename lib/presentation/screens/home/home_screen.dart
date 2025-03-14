@@ -16,6 +16,19 @@ class HomeScreenState extends State<HomeScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final currentUser = await UserPreferences.getCurrentUser();
+    if (currentUser.isNotEmpty && mounted) {
+      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+    }
+  }
+
   Future<void> _loginUser(String email, String password) async {
     setState(() {
       _isLoading = true;
